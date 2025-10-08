@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using RouteGymManagementDAL.Data.Contexts;
+
 namespace RouteGymManagementPL
 {
     public class Program
@@ -8,7 +11,12 @@ namespace RouteGymManagementPL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddDbContext<GymDbContext>(options =>
+            {
+                //options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
+                //options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); // ShortHand
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
