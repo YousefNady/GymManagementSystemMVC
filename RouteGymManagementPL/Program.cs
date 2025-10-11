@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RouteGymManagementDAL.Data.Contexts;
+using RouteGymManagementDAL.Repositories.Classes;
+using RouteGymManagementDAL.Repositories.Interfaces;
 
 namespace RouteGymManagementPL
 {
@@ -17,6 +19,12 @@ namespace RouteGymManagementPL
                 //options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); // ShortHand
             });
+
+            //builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            //builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

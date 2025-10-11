@@ -11,7 +11,7 @@ namespace RouteGymManagementDAL.Entities
         public string Description { get; set; } = null!;
 
         public int Capacity { get; set; }
-        public DateOnly StartDate { get; set; }
+        public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
         #region Relationships
