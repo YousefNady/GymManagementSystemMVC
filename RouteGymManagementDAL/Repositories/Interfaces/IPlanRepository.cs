@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementDAL.Repositories.Interfaces
 {
-    public interface IUnitOfWork
+    internal interface IPlanRepository
     {
-        ISessionRepository sessionRepository {get;}
-        IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntity, new();
-        int SaveChanges();
+        IEnumerable<Plan> GetAll();
+        Plan? GetById(int Id);
+        int Update(Plan plan);
+
     }
 }

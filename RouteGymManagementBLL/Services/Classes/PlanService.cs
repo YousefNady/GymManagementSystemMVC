@@ -1,4 +1,5 @@
-﻿using Microsoft.Identity.Client.Extensibility;
+﻿using AutoMapper;
+using Microsoft.Identity.Client.Extensibility;
 using RouteGymManagementBLL.Services.Interfaces;
 using RouteGymManagementBLL.ViewModels.PlanViewModels;
 using RouteGymManagementDAL.Entities;
@@ -16,10 +17,12 @@ namespace RouteGymManagementBLL.Services.Classes
     internal class PlanService : IPlanService
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
-        public PlanService(IUnitOfWork unitOfWork)
+        public PlanService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public IEnumerable<PlanViewModel> GetAllPlans()
@@ -30,16 +33,7 @@ namespace RouteGymManagementBLL.Services.Classes
             {
                 return [];
             }
-
-            return plans.Select(p => new PlanViewModel()
-            {
-                Id = p.Id,
-                Description = p.Description,
-                DurationDays = p.DurationDays,
-                IsActice = p.IsActive,
-                Name = p.Name,
-                Price = p.Price
-            });
+            return mapper.Map<IEnumerable<PlanViewModel>>(plans);
         }
 
         public PlanViewModel? GetPlanById(int PlanId)
@@ -49,15 +43,7 @@ namespace RouteGymManagementBLL.Services.Classes
             {
                 return null;
             }
-            return new PlanViewModel()
-            {
-                Id = plan.Id,
-                Name = plan.Name,
-                Description = plan.Description,
-                DurationDays = plan.DurationDays,
-                IsActice = plan.IsActive,
-                Price = plan.Price
-            };
+            return mapper.Map<PlanViewModel>(plan);
         }
 
         public UpdatePlanViewModel? GetPlanToUpdate(int PlanId)
@@ -67,15 +53,8 @@ namespace RouteGymManagementBLL.Services.Classes
             {
                 return null;
             }
+            return mapper.Map<UpdatePlanViewModel>(plan);
 
-            return new UpdatePlanViewModel()
-            {
-                Description = plan.Description,
-                DurationDays = plan.DurationDays,
-                Name = plan.Name,
-                Price = plan.Price
-
-            };
         }
 
 
@@ -106,25 +85,22 @@ namespace RouteGymManagementBLL.Services.Classes
             }
             catch
             {
-            return false;
+                return false;
             }
-        
+
         }
 
         public bool UpdatePlan(int PlanId, PlanViewModel Updatedplan)
         {
-            var plan = unitOfWork.GetRepository<Plan>().GetById( PlanId);
+            var plan = unitOfWork.GetRepository<Plan>().GetById(PlanId);
             if (plan is null || HasActiveMemberShips(PlanId)) return false;
 
             try
             {
                 // Update plan properties
-                plan.Description = Updatedplan.Description;
-                plan.Price = Updatedplan.Price;
-                plan.DurationDays = Updatedplan.DurationDays;
+                mapper.Map(Updatedplan, plan);
                 plan.UpdatedAt = DateTime.Now;
-
-                unitOfWork.GetRepository<Plan>().Update( plan);
+                unitOfWork.GetRepository<Plan>().Update(plan);
                 return unitOfWork.SaveChanges() > 0;
             }
             catch
@@ -144,4 +120,4 @@ namespace RouteGymManagementBLL.Services.Classes
         }
         #endregion  
     }
-    }
+}

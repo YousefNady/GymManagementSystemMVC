@@ -1,5 +1,8 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using RouteGymManagementBLL;
 using RouteGymManagementDAL.Data.Contexts;
+using RouteGymManagementDAL.Data.DataSeed;
 using RouteGymManagementDAL.Repositories.Classes;
 using RouteGymManagementDAL.Repositories.Interfaces;
 
@@ -23,11 +26,25 @@ namespace RouteGymManagementPL
             //builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             //builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+            builder.Services.AddAutoMapper(x => x.AddProfile(new MappingProfiles()));
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+
+            #region Migrate Database + Data Seeding
+
+            using var scope = app.Services.CreateScope(); 
+            var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
+            var pendingMigrations = dbContext.Database.GetMigrations();
+                if (pendingMigrations?.Any() ?? false)
+                {
+                    dbContext.Database.Migrate();
+                }
+            GymDbContextSeeding.SeedData(dbContext);
+            #endregion
+
+            // Configure the HTTP request pipeline. 
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
