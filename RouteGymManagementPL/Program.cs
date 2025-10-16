@@ -1,6 +1,10 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RouteGymManagementBLL;
+using RouteGymManagementBLL.Services.Classes;
+using RouteGymManagementBLL.Services.Interfaces;
+using RouteGymManagementBLL.ViewModels.AnalyticsViewModels;
 using RouteGymManagementDAL.Data.Contexts;
 using RouteGymManagementDAL.Data.DataSeed;
 using RouteGymManagementDAL.Repositories.Classes;
@@ -27,6 +31,7 @@ namespace RouteGymManagementPL
             //builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+            builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
             builder.Services.AddAutoMapper(x => x.AddProfile(new MappingProfiles()));
 
             var app = builder.Build();
@@ -58,9 +63,17 @@ namespace RouteGymManagementPL
             app.UseAuthorization();
 
             app.MapStaticAssets();
+
+            //app.MapControllerRoute(
+            //    name: "Trainers", // Route Name
+            //    pattern: "Couth/{action}", // 
+            //    defaults: new { controller = "Trainer", action = "Index" }
+            //    );
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Home}/{action=Index}/{id?}") // Variable Segment
+                // if i didn't write controller it will by default(Home) || action it will by default(Index)
                 .WithStaticAssets();
 
             app.Run();
