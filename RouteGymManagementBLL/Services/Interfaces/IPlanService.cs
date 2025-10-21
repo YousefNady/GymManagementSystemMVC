@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.Services.Interfaces
 {
-    internal interface IPlanService
+    public interface IPlanService
     {
         IEnumerable<PlanViewModel> GetAllPlans();
 

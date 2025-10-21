@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.ViewModels.TrainerViewModels
 {
-    internal class TrainerToUpdateViewModel
+    public class TrainerToUpdateViewModel
     {
         public string Name { get; set; } = null!;
         public string Email { get; set; } = null!;
