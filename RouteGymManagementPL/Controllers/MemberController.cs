@@ -1,5 +1,6 @@
-﻿using RouteGymManagementBLL.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using RouteGymManagementBLL.Services.Classes;
+using RouteGymManagementBLL.Services.Interfaces;
 using RouteGymManagementBLL.ViewModels.MemberViewModels;
 
 namespace RouteGymManagementPL.Controllers
@@ -91,6 +92,91 @@ namespace RouteGymManagementPL.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        #endregion
+
+        #region Edit Member
+
+        // Member/EditMember/20
+        public ActionResult EditMember(int id)
+        {
+
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = "Id of Member Can Not Be Or Negative Number";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var member = memberService.GetMemberToUpdate(id);
+            if (member is null)
+            {
+                TempData["ErrorMessage"] = "Member Not Found";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditMember([FromRoute] int id, MemberToUpdateViewModel memberToUpdate)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return View(memberToUpdate);
+            }
+
+            bool result = memberService.UpdateMemberDetails(id, memberToUpdate);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Member Update Successfully";
+            }
+            else 
+            {
+                TempData["ErrorMessage"] = "Member Failed to Updated";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
+
+        #region Delete Member
+
+        public ActionResult Delete(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = "Id of Member Can Not Be 0 Or Negative Number";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var Member = memberService.GetMemberViewDetails(id);
+            if (Member == null)
+            {
+                TempData["ErrorMessage"] = "Member Not Found";
+                return RedirectToAction(nameof(Index));
+            }
+            ViewBag.MemberId = id;
+            ViewBag.MemberId = Member.Name;
+
+            return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult DeleteConfirmed([FromForm]int id)
+        {
+            var result = memberService.RemoveMember(id);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Member Deleted Successfully";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Member Can Not Be Deleted";
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         #endregion
     }
 }

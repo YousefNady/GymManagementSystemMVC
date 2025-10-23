@@ -1,8 +1,8 @@
-﻿using RouteGymManagementBLL.Services.Interfaces;
+﻿using AutoMapper;
+using RouteGymManagementBLL.Services.Interfaces;
 using RouteGymManagementBLL.ViewModels.MemberViewModels;
 using RouteGymManagementDAL.Entities;
 using RouteGymManagementDAL.Repositories.Interfaces;
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -125,8 +125,15 @@ namespace RouteGymManagementBLL.Services.Classes
             {
                 var memberRepo = _unitOfWork.GetRepository<Member>();
 
-                if (IsEmailExists(updatedMember.Email) || IsPhoneExists(updatedMember.Phone))
+                var emailExists = _unitOfWork.GetRepository<Member>()
+                    .GetAll(x => x.Email == updatedMember.Email && x.Id != id);
+
+                var phoneExists = _unitOfWork.GetRepository<Member>()
+                    .GetAll(x => x.Phone == updatedMember.Phone && x.Id != id);
+
+                if (emailExists.Any() || phoneExists.Any())
                     return false;
+
 
                 var member = memberRepo.GetById(id);
                 if (member is null)
@@ -153,12 +160,17 @@ namespace RouteGymManagementBLL.Services.Classes
             if (member is null)
                 return false;
 
-            var hasActiveMemberSessions = _unitOfWork.GetRepository<MemberSession>()
-                .GetAll(x => x.MemberId == memberId && x.Session.StartDate > DateTime.Now)
-                .Any();
+                var SessionIds = _unitOfWork.GetRepository<MemberSession>()
+                 .GetAll(b => b.MemberId == memberId)
+                 .Select(x => x.SessionId)
+                 .ToList();
 
-            if (hasActiveMemberSessions)
-                return false;
+                var HasFutureSessions = _unitOfWork.GetRepository<Session>()
+                    .GetAll( x => SessionIds.Contains(x.Id) && x.StartDate > DateTime.Now)
+                    .Any();
+
+
+            if (HasFutureSessions) return false;
 
             var membershipRepo = _unitOfWork.GetRepository<Membership>();
             var memberships = membershipRepo.GetAll(x => x.MemberId == memberId);

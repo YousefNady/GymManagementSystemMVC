@@ -147,6 +147,48 @@ namespace RouteGymManagementPL.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        #endregion
+
+
+        #region Remove Trainer
+
+        public IActionResult Delete(int id)
+        {
+            if (id == 0)
+            {
+                TempData["ErrorMessage"] = "Invalid Trainer Id";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var trainer = trainerService.GetTrainerViewDetails(id);
+            if (trainer == null)
+            {
+                TempData["ErrorMessage"] = "Trainer not found";
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.TrainerId = trainer.Id;
+            return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var result = trainerService.RemoveTrainer(id);
+
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Trainer deleted successfully";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to delete trainer";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         #endregion
     }
