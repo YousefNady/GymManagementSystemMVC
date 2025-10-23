@@ -129,7 +129,7 @@ namespace RouteGymManagementPL.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError(key: "DataMissed", "Check Missing Fields");
+                ModelState.AddModelError("DataMissed", "Check Missing Fields");
                 return View(trainerEdited);
             }
 
@@ -137,11 +137,11 @@ namespace RouteGymManagementPL.Controllers
 
             if (result)
             {
-                TempData[key: "SuccessMessage"] = "Trainer updated successfully!";
+                TempData[ "SuccessMessage"] = "Trainer updated successfully!";
             }
             else
             {
-                TempData[key: "ErrorMessage"] = "Failed to update trainer.";
+                TempData["ErrorMessage"] = "Failed to update trainer.";
             }
 
             return RedirectToAction(nameof(Index));

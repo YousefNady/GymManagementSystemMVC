@@ -32,6 +32,11 @@ namespace RouteGymManagementBLL
 
             CreateMap<CreateSessionViewModel, Session>();
             CreateMap<Session, UpdateSessionViewModel>().ReverseMap();
+
+            CreateMap<Trainer, TrainerSelectViewModel>();
+            CreateMap<Category, CategorySelectViewModel>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.CategoryName));
+
         }
 
         private void MapMember()

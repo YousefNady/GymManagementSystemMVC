@@ -15,7 +15,7 @@ namespace RouteGymManagementBLL.Services.Interfaces
         UpdatePlanViewModel? GetPlanToUpdate(int PlanId);
 
 
-        bool UpdatePlan(int PlanId, PlanViewModel Updatedplan);
+        bool UpdatePlan(int PlanId, UpdatePlanViewModel UpdatedPlan);
         bool ToggleStatus(int PlanId);
     }
 }
