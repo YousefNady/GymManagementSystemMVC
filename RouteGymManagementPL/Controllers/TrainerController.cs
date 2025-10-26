@@ -91,7 +91,7 @@ namespace RouteGymManagementPL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var trainer = trainerService.GetTrainerViewDetails(id);
+            var trainer = trainerService.GetTrainerToUpdate(id);
             if (trainer is null)
             {
                 TempData["ErrorMessage"] = "Trainer Not Found";
@@ -102,38 +102,17 @@ namespace RouteGymManagementPL.Controllers
         }
 
 
-        [HttpPost]
-        public ActionResult Edit (CreateTrainerViewModel createdTrainer)
-        {
-            if (!ModelState.IsValid)
-            {
-                ModelState.AddModelError("DataMissing", "Check Missing Fields");
-                return View(nameof(Index), createdTrainer);
-            }
-
-            var result = trainerService.CreateTrainer(createdTrainer);
-            if (result)
-            {
-                TempData["SuccessMessage"] = "Trainer Created Successfully";
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Trainer Failed to Create, Check Phone And Email";
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
         // POST: Trainer/Edit/5
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id, UpdateTrainerViewModel trainerEdited)
+        public IActionResult Edit([FromRoute] int id, TrainerToUpdateViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("DataMissed", "Check Missing Fields");
-                return View(trainerEdited);
+                return View(model);
             }
 
-            var result = trainerService.UpdateTrainerDetails(id, trainerEdited);
+            var result = trainerService.UpdateTrainerDetails(id, model);
 
             if (result)
             {

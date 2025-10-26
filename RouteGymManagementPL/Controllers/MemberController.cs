@@ -156,9 +156,9 @@ namespace RouteGymManagementPL.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.MemberId = id;
-            ViewBag.MemberId = Member.Name;
+            ViewBag.Name = Member.Name;
 
-            return View();
+            return View(Member);
         }
 
 

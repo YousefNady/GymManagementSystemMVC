@@ -59,7 +59,7 @@ namespace RouteGymManagementBLL.Services.Classes
                     return false;
                 }
                 // check if StartDate Befrore EndDate
-                if (IsDateTimeValid(createdSession.StartDate, createdSession.EndDate))
+                if (!IsDateTimeValid(createdSession.StartDate, createdSession.EndDate))
                 {
                     return false;
                 }
@@ -143,7 +143,13 @@ namespace RouteGymManagementBLL.Services.Classes
                 {
                     return false;
                 }
-             mapper.Map(updateSession, session);
+
+                if (!IsDateTimeValid(updateSession.StartDate, updateSession.EndDate))
+                {
+                    return false;
+                }
+
+                mapper.Map(updateSession, session);
                 session!.UpdatedAt = DateTime.Now;
                 unitOfWork.sessionRepository.Update(session);
                 return unitOfWork.SaveChanges() > 0;
@@ -178,10 +184,6 @@ namespace RouteGymManagementBLL.Services.Classes
             if (session is null) return false;
             // If Session Started - No Delete Allowed
             if (session.StartDate <= DateTime.Now && session.EndDate > DateTime.Now) return false;
-
-            // If Session Is Upcoming - No Delete Allowed
-            if (session.StartDate > DateTime.Now) return false;
-
             // If Session Has Active Bookings - No Delete Allowed
             var hasActiveBooking = unitOfWork.sessionRepository.GetCountOfBookedSlots(session.Id) > 0;
             if (hasActiveBooking) return false;

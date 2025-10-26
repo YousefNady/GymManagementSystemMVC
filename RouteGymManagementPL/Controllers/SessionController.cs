@@ -100,7 +100,7 @@ namespace RouteGymManagementPL.Controllers
         [HttpPost]
         public ActionResult Edit([FromRoute] int id, UpdateSessionViewModel updatedSession)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 LoadDropDownsForTrainers();
                 return View( updatedSession);

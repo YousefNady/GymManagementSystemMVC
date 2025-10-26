@@ -91,7 +91,7 @@ namespace RouteGymManagementBLL.Services.Classes
             return unitOfWork.SaveChanges() > 0;
         }
 
-        public bool UpdateTrainerDetails(int Id, UpdateTrainerViewModel UpdatedTrainer)
+        public bool UpdateTrainerDetails(int Id, TrainerToUpdateViewModel UpdatedTrainer)
         {
             var repo = unitOfWork.GetRepository<Trainer>();
             var trainerToUpdate = repo.GetById(Id);
