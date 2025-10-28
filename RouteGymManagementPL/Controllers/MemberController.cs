@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RouteGymManagementBLL.Services.Classes;
 using RouteGymManagementBLL.Services.Interfaces;
 using RouteGymManagementBLL.ViewModels.MemberViewModels;
 
 namespace RouteGymManagementPL.Controllers
 {
+    [Authorize(Roles ="SuperAdmin")]
     public class MemberController : Controller
     {
         private readonly IMemberService memberService;

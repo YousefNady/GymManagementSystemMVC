@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RouteGymManagementBLL.Attachment_Service;
 using RouteGymManagementBLL.Services.Interfaces;
 using RouteGymManagementBLL.ViewModels.MemberViewModels;
 using RouteGymManagementDAL.Entities;
@@ -13,11 +14,13 @@ namespace RouteGymManagementBLL.Services.Classes
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IAttachmentService _attachmentService;
 
-        public MemberService(IUnitOfWork unitOfWork, IMapper mapper)
+        public MemberService(IUnitOfWork unitOfWork, IMapper mapper, IAttachmentService attachmentService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _attachmentService = attachmentService;
         }
 
         public bool CreateMember(CreateMemberViewModel createdMember)
@@ -26,12 +29,24 @@ namespace RouteGymManagementBLL.Services.Classes
             {
                 if (IsEmailExists(createdMember.Email) || IsPhoneExists(createdMember.Phone))
                     return false;
+                var photoName = _attachmentService.Upload("members", createdMember.PhotoFile);
+                if (string.IsNullOrEmpty(photoName)) return false;
 
                 // Use AutoMapper to create Member entity
-                var member = _mapper.Map<Member>(createdMember);
+                var memberEntity = _mapper.Map<Member>(createdMember);
+                memberEntity.Photo = photoName;
 
-                _unitOfWork.GetRepository<Member>().Add(member);
-                return _unitOfWork.SaveChanges() > 0;
+
+                _unitOfWork.GetRepository<Member>().Add(memberEntity);
+                var IsCreated = _unitOfWork.SaveChanges() > 0;
+                if (!IsCreated)  // Rollback photo - upload || 0 rows affected
+                {
+                    return _attachmentService.Delete(photoName, "members");
+                }
+                else
+                {
+                    return IsCreated;
+                }
             }
             catch (Exception)
             {
@@ -186,7 +201,10 @@ namespace RouteGymManagementBLL.Services.Classes
                 }
 
                 memberRepo.Delete(member);
-                return _unitOfWork.SaveChanges() > 0;
+                var IsDeleted = _unitOfWork.SaveChanges() > 0;
+                if (IsDeleted)
+                          _attachmentService.Delete(member.Photo,"members");
+                return IsDeleted;
             }
             catch
             {

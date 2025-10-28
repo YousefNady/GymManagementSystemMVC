@@ -1,4 +1,9 @@
 ﻿@model IEnumerable<PlanViewModel>
+@{
+    ViewData["Title"] = "Plans";
+}
+
+
 @if (TempData["SuccessMessage"] is not null)
 {
     <div id="Alert" class="alert alert-success alert-dismissible fade show">
@@ -31,12 +36,12 @@
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="card h-100 shadow-sm border-0 plan-card">
                         <!-- bg-primary-color if plan is Active  bg-secondary is Inactive-->
-                        <div class="card-header text-white text-center py-4 @(plan.IsActice ? "bg-primary-color" : "bg-secondary") ">
+                        <div class="card-header text-white text-center py-4 @(plan.IsActive ? "bg-primary-color" : "bg-secondary") ">
                             <h4 class="mb-0">@plan.Name</h4>
                         </div>
                         <div class="card-body d-flex flex-column">
                             <div class="text-center mb-4">
-                                <div class="display-4 fw-bold text-primary-color">@plan.Price.ToString("NO")</div>
+                                <div class="display-4 fw-bold text-primary-color">@plan.Price.ToString()</div>
                                 <small class="text-muted">EGP</small>
                             </div>
 
@@ -66,7 +71,7 @@
                                             <!-- If Plan Active or not -->
 
                                             <button type="submit" class="btn btn-outline btn-sm w-100  text-danger">
-                                                @if(plan.IsActice)
+                                                @if (plan.IsActive)
                                                 {
                                                     <i class="bi bi-x-circle me-1"> Deactivate </i>
                                                 }

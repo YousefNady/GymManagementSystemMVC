@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RouteGymManagementBLL.Services.Classes;
 using RouteGymManagementBLL.Services.Interfaces;
 using RouteGymManagementBLL.ViewModels.PlanViewModels;
 
 namespace RouteGymManagementPL.Controllers
 {
+    [Authorize]
     public class PlanController : Controller
     {
         private readonly IPlanService planService;
@@ -21,7 +23,7 @@ namespace RouteGymManagementPL.Controllers
         public IActionResult Index()
         {
             var plans = planService.GetAllPlans();
-            return View();
+            return View(plans);
         }
 
 
@@ -46,6 +48,8 @@ namespace RouteGymManagementPL.Controllers
         #endregion
 
         #region Edit Plan
+        // GET: Plan/Edit/5
+        [HttpGet]
         public ActionResult Edit(int id)
         {
             if (id < 0)
@@ -64,6 +68,8 @@ namespace RouteGymManagementPL.Controllers
         }
 
         // Edit {Post}
+        // POST: Plan/Edit/5
+        [HttpPost]
         public ActionResult Edit([FromRoute] int id , UpdatePlanViewModel UpdatedPlan)
         {
             if (!ModelState.IsValid)
@@ -88,7 +94,7 @@ namespace RouteGymManagementPL.Controllers
 
         #region Delete
         [HttpPost]
-        public ActionResult Activate (int id)
+        public ActionResult Activate(int id)
         {
             var result = planService.ToggleStatus(id);
             if (result)

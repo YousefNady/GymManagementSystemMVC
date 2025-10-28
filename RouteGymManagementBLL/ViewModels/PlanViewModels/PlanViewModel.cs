@@ -13,7 +13,7 @@ namespace RouteGymManagementBLL.ViewModels.PlanViewModels
         public string Description { get; set; } = null!;
         public int DurationDays { get; set; }
         public decimal Price { get; set; }
-        public bool IsActice { get; set; }
+        public bool IsActive { get; set; }
 
     }
 

@@ -1,11 +1,13 @@
 ﻿@model PlanViewModel
-
+@{
+    ViewData["Title"] = "Plan Details";
+}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-lg border-0">
                 <!-- bg-primary-color if plan is Active  bg-secondary is Inactive-->
-                <div class="card-header text-white text-center py-5 @(Model.IsActice ? "bg-primary-color" : "bg-secondary")">
+                <div class="card-header text-white text-center py-5 @(Model.IsActive ? "bg-primary-color" : "bg-secondary")">
                     <i class="bi bi-award display-4 mb-3"></i>
                     <h2 class="mb-0">@Model.Name</h2>
                 </div>
@@ -45,12 +47,12 @@
                                 <div class="icon-box me-3">
                                     <!-- if Plan Is Active bi-check-circle-fill text-success -->
                                     <!-- if Plan Is InActive bi-x-circle-fill text-danger -->
-                                    <i class="bi fs-4 @(Model.IsActice ? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger") "></i>
+                                    <i class="bi fs-4 @(Model.IsActive ? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger") "></i>
                                 </div>
                                 <div>
                                     <h6 class="mb-0 text-muted">Status</h6>
                                     <p class="mb-0">
-                                        @if(Model.IsActice)
+                                        @if(Model.IsActive)
                                         {
                                             <!-- if Plan Is Active -->
                                             <span class="badge bg-success">

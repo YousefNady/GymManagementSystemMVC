@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RouteGymManagementBLL.Services.Classes;
@@ -7,6 +8,8 @@ using RouteGymManagementBLL.ViewModels.TrainerViewModels;
 
 namespace RouteGymManagementPL.Controllers
 {
+    [Authorize(Roles = "SuperAdmin")]
+
     public class TrainerController : Controller
     {
         private readonly ITrainerService trainerService;

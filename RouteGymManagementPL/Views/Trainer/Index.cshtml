@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<TrainerViewModel>
+@{
+    ViewData["Title"] = "Trainers";
+}
+
 @if (TempData["SuccessMessage"] != null)
 {
     <div id="Alert" class="alert alert-success alert-dismissible fade show">
@@ -37,7 +41,7 @@ else if (TempData["ErrorMessage"] != null)
             <table class="table table-borderless">
                 <thead>
                     <tr>
-                        <th><span>>@nameof(TrainerViewModel.Name)</span></th>
+                        <th><span>@nameof(TrainerViewModel.Name)</span></th>
                         <th><span>@nameof(TrainerViewModel.Email)</span></th>
                         <th><span>@nameof(TrainerViewModel.Phone)</span></th>
                         <th><span>@nameof(TrainerViewModel.Specialties)</span></th>

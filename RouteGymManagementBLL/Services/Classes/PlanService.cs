@@ -61,34 +61,26 @@ namespace RouteGymManagementBLL.Services.Classes
         // soft delete
         public bool ToggleStatus(int PlanId)
         {
-            var repo = unitOfWork.GetRepository<Plan>();
-
-            var plan = repo.GetById(PlanId);
-            if (plan is null || HasActiveMemberShips(PlanId))
-            {
-                return false;
-            }
-            if (plan.IsActive == true)
-            {
-                return plan.IsActive = false;
-            }
-            else
-            {
-                plan.IsActive = true;
-            }
-            plan.UpdatedAt = DateTime.Now;
             try
             {
-                repo.Update(plan);
+                var Repo = unitOfWork.GetRepository<Plan>();
+                var Plan = Repo.GetById(PlanId);
 
+                if (Plan is null || HasActiveMemberShips(PlanId))
+                    return false;
+
+                Plan.IsActive = Plan.IsActive == true ? false : true;
+                Plan.UpdatedAt = DateTime.Now;
+
+                Repo.Update(Plan);
                 return unitOfWork.SaveChanges() > 0;
             }
             catch
             {
                 return false;
             }
-
         }
+
 
         public bool UpdatePlan(int PlanId, UpdatePlanViewModel UpdatedPlan)
         {

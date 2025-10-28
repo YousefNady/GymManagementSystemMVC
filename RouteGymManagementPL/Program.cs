@@ -1,12 +1,15 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RouteGymManagementBLL;
+using RouteGymManagementBLL.Attachment_Service;
 using RouteGymManagementBLL.Services.Classes;
 using RouteGymManagementBLL.Services.Interfaces;
 using RouteGymManagementBLL.ViewModels.AnalyticsViewModels;
 using RouteGymManagementDAL.Data.Contexts;
 using RouteGymManagementDAL.Data.DataSeed;
+using RouteGymManagementDAL.Entities;
 using RouteGymManagementDAL.Repositories.Classes;
 using RouteGymManagementDAL.Repositories.Interfaces;
 
@@ -36,7 +39,21 @@ namespace RouteGymManagementPL
             builder.Services.AddScoped<ITrainerService, TrainerService>();
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<ISessionService, SessionService>();
+            builder.Services.AddScoped<IAttachmentService, AttachmentService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>( Config =>
+            {
 
+                Config.User.RequireUniqueEmail = true;
+
+            }).AddEntityFrameworkStores<GymDbContext>();
+
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";  // No Need To write it - its by default
+                options.AccessDeniedPath = "/Account/AccessDenied"; // No Need To write it - its by default
+            });
 
 
             builder.Services.AddAutoMapper(x => x.AddProfile(new MappingProfiles()));
@@ -48,12 +65,18 @@ namespace RouteGymManagementPL
 
             using var scope = app.Services.CreateScope(); 
             var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+
             var pendingMigrations = dbContext.Database.GetMigrations();
                 if (pendingMigrations?.Any() ?? false)
                 {
                     dbContext.Database.Migrate();
                 }
             GymDbContextSeeding.SeedData(dbContext);
+            IdentityDbContextSeeding.SeedData(roleManager, userManager);
+
             #endregion
 
             // Configure the HTTP request pipeline. 
@@ -66,7 +89,7 @@ namespace RouteGymManagementPL
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
@@ -79,7 +102,7 @@ namespace RouteGymManagementPL
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}") // Variable Segment
+                pattern: "{controller=Account}/{action=Login}/{id?}") // Variable Segment
                 // if i didn't write controller it will by default(Home) || action it will by default(Index)
                 .WithStaticAssets();
 
