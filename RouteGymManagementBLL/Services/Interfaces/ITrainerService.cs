@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.Services.Interfaces
 {
-    internal interface ITrainerService
+    public interface ITrainerService
     {
         IEnumerable<TrainerViewModel> GetAllTrainers();
         bool CreateTrainer(CreateTrainerViewModel createTrainer);
@@ -17,7 +17,7 @@ namespace RouteGymManagementBLL.Services.Interfaces
 
 
         TrainerToUpdateViewModel? GetTrainerToUpdate(int TrainerId);
-        bool UpdateTrainerDetails(int Id, UpdateTrainerViewModel UpdatedTrainer);
+        bool UpdateTrainerDetails(int Id, TrainerToUpdateViewModel UpdatedTrainer);
         bool RemoveTrainer(int TrainerId);
 
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.ViewModels.TrainerViewModels
 {
-    internal class CreateTrainerViewModel
+    public class CreateTrainerViewModel
     {
         [Required(ErrorMessage = "Name Is Required")]
         [StringLength(20, MinimumLength = 2, ErrorMessage = "Name Must Be Between 2 and 20 chars")]
@@ -18,7 +18,7 @@ namespace RouteGymManagementBLL.ViewModels.TrainerViewModels
         [Required(ErrorMessage = "Email Is Required")]
         [EmailAddress(ErrorMessage = "Invalid Email Format")]
         [DataType(DataType.EmailAddress)]
-        [StringLength(10, MinimumLength = 5, ErrorMessage = "Email Must Be Between 5 and 10 char")]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "Email Must Be Between 5 and 10 char")]
         public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "Phone Is Required")]

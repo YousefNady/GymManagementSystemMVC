@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.Services.Classes
 {
-    internal class PlanService : IPlanService
+    public class PlanService : IPlanService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
@@ -90,7 +90,7 @@ namespace RouteGymManagementBLL.Services.Classes
 
         }
 
-        public bool UpdatePlan(int PlanId, PlanViewModel Updatedplan)
+        public bool UpdatePlan(int PlanId, UpdatePlanViewModel UpdatedPlan)
         {
             var plan = unitOfWork.GetRepository<Plan>().GetById(PlanId);
             if (plan is null || HasActiveMemberShips(PlanId)) return false;
@@ -98,7 +98,7 @@ namespace RouteGymManagementBLL.Services.Classes
             try
             {
                 // Update plan properties
-                mapper.Map(Updatedplan, plan);
+                mapper.Map(UpdatedPlan, plan);
                 plan.UpdatedAt = DateTime.Now;
                 unitOfWork.GetRepository<Plan>().Update(plan);
                 return unitOfWork.SaveChanges() > 0;
@@ -115,7 +115,7 @@ namespace RouteGymManagementBLL.Services.Classes
         private bool HasActiveMemberShips(int planId)
         {
             var MemberShips = unitOfWork.GetRepository<Membership>()
-                .GetAll(x => x.PlanId == planId && x.Status == "Active");
+                .GetAll(x => x.PlanId == planId && x.Status == "Active" );
             return MemberShips.Any();
         }
         #endregion  

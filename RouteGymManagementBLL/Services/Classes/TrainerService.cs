@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.Services.Classes
 {
-    internal class TrainerService : ITrainerService
+    public class TrainerService : ITrainerService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
@@ -91,7 +91,7 @@ namespace RouteGymManagementBLL.Services.Classes
             return unitOfWork.SaveChanges() > 0;
         }
 
-        public bool UpdateTrainerDetails(int Id, UpdateTrainerViewModel UpdatedTrainer)
+        public bool UpdateTrainerDetails(int Id, TrainerToUpdateViewModel UpdatedTrainer)
         {
             var repo = unitOfWork.GetRepository<Trainer>();
             var trainerToUpdate = repo.GetById(Id);

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.Services.Interfaces
 {
-    internal interface IPlanService
+    public interface IPlanService
     {
         IEnumerable<PlanViewModel> GetAllPlans();
 
@@ -15,7 +15,7 @@ namespace RouteGymManagementBLL.Services.Interfaces
         UpdatePlanViewModel? GetPlanToUpdate(int PlanId);
 
 
-        bool UpdatePlan(int PlanId, PlanViewModel Updatedplan);
+        bool UpdatePlan(int PlanId, UpdatePlanViewModel UpdatedPlan);
         bool ToggleStatus(int PlanId);
     }
 }

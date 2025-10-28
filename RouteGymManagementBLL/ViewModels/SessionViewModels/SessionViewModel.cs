@@ -33,7 +33,7 @@ namespace RouteGymManagementBLL.ViewModels.SessionViewModels
                 return $"{StartDate:hh:mm tt} - {EndDate:hh:mm tt}";
             }
         }
-        public TimeSpan Duration => StartDate - EndDate;
+        public TimeSpan Duration => EndDate - StartDate;
         public string Status 
         { 
             get
