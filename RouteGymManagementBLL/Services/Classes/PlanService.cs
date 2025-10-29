@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.Services.Classes
 {
-    internal class PlanService : IPlanService
+    public class PlanService : IPlanService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
@@ -61,36 +61,28 @@ namespace RouteGymManagementBLL.Services.Classes
         // soft delete
         public bool ToggleStatus(int PlanId)
         {
-            var repo = unitOfWork.GetRepository<Plan>();
-
-            var plan = repo.GetById(PlanId);
-            if (plan is null || HasActiveMemberShips(PlanId))
-            {
-                return false;
-            }
-            if (plan.IsActive == true)
-            {
-                return plan.IsActive = false;
-            }
-            else
-            {
-                plan.IsActive = true;
-            }
-            plan.UpdatedAt = DateTime.Now;
             try
             {
-                repo.Update(plan);
+                var Repo = unitOfWork.GetRepository<Plan>();
+                var Plan = Repo.GetById(PlanId);
 
+                if (Plan is null || HasActiveMemberShips(PlanId))
+                    return false;
+
+                Plan.IsActive = Plan.IsActive == true ? false : true;
+                Plan.UpdatedAt = DateTime.Now;
+
+                Repo.Update(Plan);
                 return unitOfWork.SaveChanges() > 0;
             }
             catch
             {
                 return false;
             }
-
         }
 
-        public bool UpdatePlan(int PlanId, PlanViewModel Updatedplan)
+
+        public bool UpdatePlan(int PlanId, UpdatePlanViewModel UpdatedPlan)
         {
             var plan = unitOfWork.GetRepository<Plan>().GetById(PlanId);
             if (plan is null || HasActiveMemberShips(PlanId)) return false;
@@ -98,7 +90,7 @@ namespace RouteGymManagementBLL.Services.Classes
             try
             {
                 // Update plan properties
-                mapper.Map(Updatedplan, plan);
+                mapper.Map(UpdatedPlan, plan);
                 plan.UpdatedAt = DateTime.Now;
                 unitOfWork.GetRepository<Plan>().Update(plan);
                 return unitOfWork.SaveChanges() > 0;
@@ -115,7 +107,7 @@ namespace RouteGymManagementBLL.Services.Classes
         private bool HasActiveMemberShips(int planId)
         {
             var MemberShips = unitOfWork.GetRepository<Membership>()
-                .GetAll(x => x.PlanId == planId && x.Status == "Active");
+                .GetAll(x => x.PlanId == planId && x.Status == "Active" );
             return MemberShips.Any();
         }
         #endregion  

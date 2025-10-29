@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.ViewModels.PlanViewModels
 {
-    internal class UpdatePlanViewModel
+    public class UpdatePlanViewModel
     {
         [Required(ErrorMessage = "Plan Name Is Required")]
         [StringLength(50,ErrorMessage ="Plan Name Must Be Less Than 51 Char")]

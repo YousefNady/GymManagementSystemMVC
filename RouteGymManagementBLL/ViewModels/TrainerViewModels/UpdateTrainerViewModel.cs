@@ -8,18 +8,19 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.ViewModels.TrainerViewModels
 {
-    internal class UpdateTrainerViewModel
+    public class UpdateTrainerViewModel
     {
         [Required(ErrorMessage = "Name Is Required")]
         [StringLength(20, MinimumLength = 2, ErrorMessage = "Name Must Be Between 2 and 20 chars")]
         [RegularExpression(@"[a-zA-Z\s]+$", ErrorMessage = "Name Can Contain Only Letters And Spaces")]
         public string Name { get; set; } = null!;
 
-        [Required(ErrorMessage = "Email Is Required")]
-        [EmailAddress(ErrorMessage = "Invalid Email Format")]
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
         [DataType(DataType.EmailAddress)]
-        [StringLength(10, MinimumLength = 5, ErrorMessage = "Email Must Be Between 5 and 10 char")]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "Email must be between 5 and 100 characters")]
         public string Email { get; set; } = null!;
+
 
         [Required(ErrorMessage = "Phone Is Required")]
         [RegularExpression(@"^(010|011|012|015)\d{8}$", ErrorMessage = "Phone Number Must Be Valid Egyption PhoneNumber")]

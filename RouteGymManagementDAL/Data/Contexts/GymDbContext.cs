@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RouteGymManagementDAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementDAL.Data.Contexts
 {
-    public class GymDbContext : DbContext
+    public class GymDbContext : IdentityDbContext<ApplicationUser>
     {
 
         public GymDbContext(DbContextOptions<GymDbContext> options) : base(options)
@@ -25,7 +26,20 @@ namespace RouteGymManagementDAL.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            modelBuilder.Entity<ApplicationUser>(x =>
+            {
+                x.Property(z => z.FirstName)
+                .HasColumnType("varchar")
+                .HasMaxLength(50);
+
+                x.Property(z => z.LastName)
+               .HasColumnType("varchar")
+               .HasMaxLength(50);
+            });
         }
 
 

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RouteGymManagementBLL.Services.Interfaces;
 using RouteGymManagementDAL.Entities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RouteGymManagementPL.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IAnalyticsService analyticsService;

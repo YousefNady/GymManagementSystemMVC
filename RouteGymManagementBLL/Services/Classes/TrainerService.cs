@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.Services.Classes
 {
-    internal class TrainerService : ITrainerService
+    public class TrainerService : ITrainerService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;

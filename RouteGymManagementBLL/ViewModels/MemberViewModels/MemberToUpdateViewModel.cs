@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RouteGymManagementBLL.ViewModels.MemberViewModels
 {
-    internal class MemberToUpdateViewModel
+    public class MemberToUpdateViewModel
     {
         public string Name { get; set; } = null!;
         public string? Photo { get; set; }

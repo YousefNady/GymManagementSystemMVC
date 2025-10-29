@@ -13,7 +13,7 @@ namespace RouteGymManagementDAL.Entities
 
 
         // we will store the url of Photo In DB
-        public string? Photo { get; set; }
+        public string Photo { get; set; } = null!;
 
 
         #region Relationships
