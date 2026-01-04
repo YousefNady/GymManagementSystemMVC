@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RouteGymManagementDAL.Entities
+﻿namespace RouteGymManagementDAL.Entities
 {
     public class Membership : BaseEntity
     {
@@ -14,16 +7,16 @@ namespace RouteGymManagementDAL.Entities
 
         public DateTime EndDate { get; set; }
 
-
+        // Business Rule: Membership status is computed: "Active"
+        // if EndDate > Now , else "Expired"
         // readOnly Property
-
         public string Status
         {
             get
             {
                 if (EndDate <= DateTime.Now)
                 {
-                    return "Expird";
+                    return "Expired";
                 }
                 else
                 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RouteGymManagementDAL.Entities
+﻿namespace RouteGymManagementDAL.Entities
 {
 
     // 1 - 1 relationship with Member [Shared PK]

@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RouteGymManagementDAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RouteGymManagementDAL.Data.Configurations
 {
@@ -29,7 +24,7 @@ namespace RouteGymManagementDAL.Data.Configurations
 
             builder.ToTable(tb =>
             {
-                tb.HasCheckConstraint("GymUserValidEmailCheck", "Email Like '%_@_%._%'");
+                tb.HasCheckConstraint("GymUserValidEmailCheck", "Email like '_%@_%._%'");
                 tb.HasCheckConstraint("GymUserValidPhoneCheck", "Phone Like '01%' And Phone Not Like '%[^0-9]' ");
             });
 

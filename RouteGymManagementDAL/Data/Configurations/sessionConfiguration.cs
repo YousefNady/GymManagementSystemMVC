@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RouteGymManagementDAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RouteGymManagementDAL.Data.Configurations
 {
@@ -19,12 +14,12 @@ namespace RouteGymManagementDAL.Data.Configurations
                 tb.HasCheckConstraint("SessionEndDateCheck", "EndDate > StartDate");
             });
 
-            builder.HasOne(x => x.SessionCategore)
+            builder.HasOne(x => x.Category)
                 .WithMany(x => x.Sessions)
                 .HasForeignKey(x => x.CategoryId);
 
 
-            builder.HasOne(x => x.SessionTrainer)
+            builder.HasOne(x => x.Trainer)
                .WithMany(x => x.TrainerSessions)
                .HasForeignKey(x => x.TrainerId);
         }

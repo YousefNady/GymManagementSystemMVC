@@ -1,0 +1,15 @@
+﻿namespace RouteGymManagementBLL.View_Models.TrainerVMs
+{
+    public class TrainerToUpdateViewModel
+    {
+        public string Name { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string Phone { get; set; } = null!;
+        public int BulidingNumber { get; set; }
+        public string Street { get; set; } = null!;
+        public string City { get; set; } = null!;
+        public string Specialties { get; set; } = null!;
+
+
+    }
+}

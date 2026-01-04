@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RouteGymManagementBLL.Services.Classes;
-using RouteGymManagementBLL.Services.Interfaces;
-using RouteGymManagementBLL.ViewModels.PlanViewModels;
+using RouteGymManagementBLL.BusinessServices.Interfaces;
+using RouteGymManagementBLL.View_Models.PlanVMs;
 
 namespace RouteGymManagementPL.Controllers
 {
@@ -30,7 +29,7 @@ namespace RouteGymManagementPL.Controllers
         #endregion
 
         #region Get Plan Details
-        public ActionResult Details( int id)
+        public ActionResult Details(int id)
         {
             if (id < 0)
             {
@@ -70,7 +69,7 @@ namespace RouteGymManagementPL.Controllers
         // Edit {Post}
         // POST: Plan/Edit/5
         [HttpPost]
-        public ActionResult Edit([FromRoute] int id , UpdatePlanViewModel UpdatedPlan)
+        public ActionResult Edit([FromRoute] int id, UpdatePlanViewModel UpdatedPlan)
         {
             if (!ModelState.IsValid)
             {
