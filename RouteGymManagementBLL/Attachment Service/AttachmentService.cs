@@ -1,18 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace RouteGymManagementBLL.Attachment_Service
 {
     public class AttachmentService : IAttachmentService
     {
         private readonly IWebHostEnvironment webHost;
-        private readonly string[] allowedExtensions = { ".jpg", ".png", ".jpeg" }; 
+        private readonly string[] allowedExtensions = { ".jpg", ".png", ".jpeg" };
         private readonly long maxFileSize = 5 * 1024 * 1024; // 5 MB
 
         public AttachmentService(IWebHostEnvironment webHost)
@@ -34,7 +28,7 @@ namespace RouteGymManagementBLL.Attachment_Service
                 var folderPath = Path.Combine(webHost.WebRootPath, "images", folderName);
                 if (!Directory.Exists(folderPath))
                 {
-                    Directory.CreateDirectory(folderName);
+                    Directory.CreateDirectory(folderPath);
                 }
 
                 var fileName = Guid.NewGuid().ToString() + fileExtension;
@@ -68,7 +62,8 @@ namespace RouteGymManagementBLL.Attachment_Service
                 else
                 {
                     return false;
-                };
+                }
+                ;
 
             }
             catch (Exception ex)

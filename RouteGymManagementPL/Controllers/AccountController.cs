@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using RouteGymManagementBLL.Services.Classes;
-using RouteGymManagementBLL.Services.Interfaces;
-using RouteGymManagementBLL.ViewModels.AccountViewModels;
+using RouteGymManagementBLL.BusinessServices.Interfaces;
+using RouteGymManagementBLL.View_Models.AccountVMs;
 using RouteGymManagementDAL.Entities;
 
 namespace RouteGymManagementPL.Controllers
@@ -36,7 +35,7 @@ namespace RouteGymManagementPL.Controllers
                 return View(model);
             }
 
-            var result = signInManager.PasswordSignInAsync( user,  model.Password,  model.RememberMe,  false).Result;
+            var result = signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false).Result;
             if (result.IsNotAllowed)
             {
                 ModelState.AddModelError("InvalidLogin", "Your Account Not Allowed");
@@ -48,10 +47,10 @@ namespace RouteGymManagementPL.Controllers
 
             if (result.Succeeded)
             {
-                return RedirectToAction(nameof(Index), nameof(HomeController));
+                return RedirectToAction("Index", "Home");
             }
 
-            return View(model) ;
+            return View(model);
         }
         #endregion
 

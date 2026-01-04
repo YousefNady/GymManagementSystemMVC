@@ -329,7 +329,7 @@ namespace RouteGymManagementDAL.Data.Migrations
 
                     b.ToTable("Members", t =>
                         {
-                            t.HasCheckConstraint("GymUserValidEmailCheck", "Email Like '%_@_%._%'");
+                            t.HasCheckConstraint("GymUserValidEmailCheck", "Email like '_%@_%._%'");
 
                             t.HasCheckConstraint("GymUserValidPhoneCheck", "Phone Like '01%' And Phone Not Like '%[^0-9]' ");
                         });
@@ -529,7 +529,7 @@ namespace RouteGymManagementDAL.Data.Migrations
 
                     b.ToTable("Trainers", t =>
                         {
-                            t.HasCheckConstraint("GymUserValidEmailCheck", "Email Like '%_@_%._%'")
+                            t.HasCheckConstraint("GymUserValidEmailCheck", "Email like '_%@_%._%'")
                                 .HasName("GymUserValidEmailCheck1");
 
                             t.HasCheckConstraint("GymUserValidPhoneCheck", "Phone Like '01%' And Phone Not Like '%[^0-9]' ")
@@ -674,21 +674,21 @@ namespace RouteGymManagementDAL.Data.Migrations
 
             modelBuilder.Entity("RouteGymManagementDAL.Entities.Session", b =>
                 {
-                    b.HasOne("RouteGymManagementDAL.Entities.Category", "SessionCategore")
+                    b.HasOne("RouteGymManagementDAL.Entities.Category", "Category")
                         .WithMany("Sessions")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RouteGymManagementDAL.Entities.Trainer", "SessionTrainer")
+                    b.HasOne("RouteGymManagementDAL.Entities.Trainer", "Trainer")
                         .WithMany("TrainerSessions")
                         .HasForeignKey("TrainerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SessionCategore");
+                    b.Navigation("Category");
 
-                    b.Navigation("SessionTrainer");
+                    b.Navigation("Trainer");
                 });
 
             modelBuilder.Entity("RouteGymManagementDAL.Entities.Trainer", b =>

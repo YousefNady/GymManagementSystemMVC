@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RouteGymManagementBLL.Services.Interfaces;
-using RouteGymManagementDAL.Entities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using RouteGymManagementBLL.BusinessServices.Interfaces;
 
 namespace RouteGymManagementPL.Controllers
 {
@@ -19,7 +17,7 @@ namespace RouteGymManagementPL.Controllers
         public ActionResult Index()
         {
             var analyticsData = analyticsService.GetAnalyticsData();
-             return View(analyticsData);           // Return View For Action With Passing Model Data
+            return View(analyticsData);           // Return View For Action With Passing Model Data
 
             // return View();                // Return Default View With Action Name
             // return View(model);           // Return View For Action With Passing Model Data

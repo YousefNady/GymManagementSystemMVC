@@ -1,27 +1,25 @@
-﻿using GymManagementSystemBLL.ViewModels.SessionViewModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using RouteGymManagementBLL.Services.Classes;
-using RouteGymManagementBLL.Services.Interfaces;
-using RouteGymManagementDAL.Entities;
+using RouteGymManagementBLL.BusinessServices.Interfaces;
+using RouteGymManagementBLL.View_Models.SessionVMs;
 
 namespace RouteGymManagementPL.Controllers
 {
     [Authorize]
     public class SessionController : Controller
     {
-        private readonly ISessionService sessionService;
+        private readonly ISessionService _sessionService;
 
-        public SessionController( ISessionService sessionService )
+        public SessionController(ISessionService sessionService)
         {
-            this.sessionService = sessionService;
+            _sessionService = sessionService;
         }
 
         #region Get All Sessions
         public ActionResult Index()
         {
-            var sessions = sessionService.GetAllSessions();
+            var sessions = _sessionService.GetAllSessions();
             return View(sessions);
         }
         #endregion
@@ -36,7 +34,7 @@ namespace RouteGymManagementPL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var Session = sessionService.GetSessionById(id);
+            var Session = _sessionService.GetSessionDetails(id);
             if (Session is null)
             {
                 TempData["ErrorMessage"] = "Session Not Found";
@@ -48,36 +46,39 @@ namespace RouteGymManagementPL.Controllers
         #endregion
 
         #region Create Session
+
+        //Session/Create
         public ActionResult Create()
         {
-            LoadDropDownsForCategories();
-            LoadDropDownsForTrainers();
 
+            LoadDropDowns();
             return View();
         }
 
+
         [HttpPost]
-        public ActionResult Create(CreateSessionViewModel createdSession)
+        public ActionResult Create(CreateSessionViewModel CreateSession)
         {
             if (!ModelState.IsValid)
             {
-                LoadDropDownsForCategories();
-                LoadDropDownsForTrainers();
-                return View(createdSession);
+                LoadDropDowns();
+                return View(CreateSession);
             }
-            var result = sessionService.CreateSession(createdSession);
-            if(result)
+
+            bool result = _sessionService.CreateSession(CreateSession);
+
+            if (result)
             {
-                TempData["SuccessMessage"] = "Session Created";
+                TempData["SuccessMessage"] = "Session Created Succesfully";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                TempData["ErrorMessage"] = "Failed To Create Session";
-                LoadDropDownsForCategories();
-                LoadDropDownsForTrainers();
-                return View(createdSession);
+                LoadDropDowns();
+                TempData["ErrorMessage"] = "Session Failed To Create";
+                return View(CreateSession);
             }
+
         }
         #endregion
 
@@ -90,13 +91,13 @@ namespace RouteGymManagementPL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var session = sessionService.GetSessionToUpdate(id);
+            var session = _sessionService.GetSessionToUpdate(id);
             if (session is null)
             {
                 TempData["ErrorMessage"] = "Session Can Not Be Updated";
                 return RedirectToAction(nameof(Index));
             }
-            LoadDropDownsForTrainers();
+            LoadDropDownForTrainersOnly();
             return View(session);
         }
         [HttpPost]
@@ -104,11 +105,11 @@ namespace RouteGymManagementPL.Controllers
         {
             if (ModelState.IsValid)
             {
-                LoadDropDownsForTrainers();
-                return View( updatedSession);
+                LoadDropDownForTrainersOnly();
+                return View(updatedSession);
             }
 
-            var result = sessionService.UpdateSession(updatedSession, id);
+            var result = _sessionService.UpdateSession(id, updatedSession);
             if (result)
             {
                 TempData["SuccessMessage"] = "Session Updated";
@@ -118,7 +119,7 @@ namespace RouteGymManagementPL.Controllers
                 TempData["ErrorMessage"] = "Session Failed to updated";
             }
 
-            return RedirectToAction( nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -126,55 +127,67 @@ namespace RouteGymManagementPL.Controllers
 
         #endregion
 
-        #region Remove Session
+        #region Delete Session 
+
+        //Session/Delete/90
         public ActionResult Delete(int id)
         {
+
             if (id <= 0)
             {
-                TempData["ErrorMessage"] = "Invalid Session Id";
+                TempData["ErrorMessage"] = "Id Cannot be negative or zero";
                 return RedirectToAction(nameof(Index));
             }
 
-            var session = sessionService.GetSessionById(id);
+            var session = _sessionService.GetSessionDetails(id);
+
             if (session is null)
             {
                 TempData["ErrorMessage"] = "Session Not Found";
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.SessionId = session.Id;  // to send it to view 
-            // 34an ytb3t el id fel form bta3t el delete (Yb3to to The Next Request)
+            ViewBag.SessionId = id;
             return View();
         }
 
         [HttpPost]
+
+        //Session/DeleteConfirmed/6
         public ActionResult DeleteConfirmed(int id)
         {
-           var result = sessionService.RemoveSession(id);
+            var result = _sessionService.DeleteSession(id);
             if (result)
             {
-                TempData["SuccessMessage"] = "Session Deleted";
+                TempData["SuccessMessage"] = "Session Deleted Successfully";
             }
             else
             {
-                TempData["ErrorMessage"] = "Session Cannot be Deleted";
+                TempData["ErrorMessage"] = "Session Failed To Delete";
             }
-            return RedirectToAction( nameof(Index));
+
+            return RedirectToAction(nameof(Index));
+
+
+
         }
         #endregion
 
 
-        #region HelperMethods
-        private void LoadDropDownsForTrainers()
-        {
-            var Trainers = sessionService.GetAllTrainersForDropDown();
-            ViewBag.Trainers = new SelectList(Trainers, "Id", "Name");
-        }
 
-        private void LoadDropDownsForCategories()
+        #region Helper Methods
+        private void LoadDropDowns()
         {
-            var Categories = sessionService.GetAllCategoryForDropDown();
-            ViewBag.Categories = new SelectList(Categories, "Id", "Name");
+            var trainers = _sessionService.GetAllTrainersForDropDown();
+            var categories = _sessionService.GetAllCategoriesForDropDown();
+
+            ViewBag.Trainers = new SelectList(trainers, "Id", "Name");
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+        }
+        private void LoadDropDownForTrainersOnly()
+        {
+            var trainers = _sessionService.GetAllTrainersForDropDown();
+
+            ViewBag.Trainers = new SelectList(trainers, "Id", "Name");
         }
         #endregion
 

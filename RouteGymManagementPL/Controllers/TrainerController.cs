@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using RouteGymManagementBLL.Services.Classes;
-using RouteGymManagementBLL.Services.Interfaces;
-using RouteGymManagementBLL.ViewModels.TrainerViewModels;
+using RouteGymManagementBLL.BusinessServices.Interfaces;
+using RouteGymManagementBLL.View_Models.TrainerVMs;
 
 namespace RouteGymManagementPL.Controllers
 {
@@ -72,7 +69,7 @@ namespace RouteGymManagementPL.Controllers
             }
 
             var result = trainerService.CreateTrainer(createdTrainer);
-            if(result)
+            if (result)
             {
                 TempData["SuccessMessage"] = "Trainer Created Successfully";
             }
@@ -106,7 +103,7 @@ namespace RouteGymManagementPL.Controllers
 
 
         [HttpPost]
-        public ActionResult Edit (CreateTrainerViewModel createdTrainer)
+        public ActionResult Edit(CreateTrainerViewModel createdTrainer)
         {
             if (!ModelState.IsValid)
             {
@@ -140,7 +137,7 @@ namespace RouteGymManagementPL.Controllers
 
             if (result)
             {
-                TempData[ "SuccessMessage"] = "Trainer updated successfully!";
+                TempData["SuccessMessage"] = "Trainer updated successfully!";
             }
             else
             {

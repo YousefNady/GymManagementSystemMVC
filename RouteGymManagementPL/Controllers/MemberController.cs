@@ -1,25 +1,24 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RouteGymManagementBLL.Services.Classes;
-using RouteGymManagementBLL.Services.Interfaces;
-using RouteGymManagementBLL.ViewModels.MemberViewModels;
+using RouteGymManagementBLL.BusinessServices.Interfaces;
+using RouteGymManagementBLL.View_Models.MemberVMs;
 
 namespace RouteGymManagementPL.Controllers
 {
-    [Authorize(Roles ="SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public class MemberController : Controller
     {
-        private readonly IMemberService memberService;
+        private readonly IMemberService _memberService;
 
         public MemberController(IMemberService memberService)
         {
-            this.memberService = memberService;
+            _memberService = memberService;
         }
 
         #region Get All Members
         public ActionResult Index(int id)
         {
-            var members = memberService.GetAllMembers();
+            var members = _memberService.GetAllMembers();
             return View(members);
         }
         #endregion
@@ -37,7 +36,7 @@ namespace RouteGymManagementPL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var member = memberService.GetMemberViewDetails(id);
+            var member = _memberService.GetMemberViewDetails(id);
             if (member is null)
             {
                 TempData["ErrorMessage"] = "Member Not Found";
@@ -54,8 +53,8 @@ namespace RouteGymManagementPL.Controllers
                 TempData["ErrorMessage"] = "Id of Member Can Not Be Or Negative Number";
                 return RedirectToAction(nameof(Index));
             }
-            var HealthRecord = memberService.GetMemberHealthRecordDetails(id);
-            if (HealthRecord is null )
+            var HealthRecord = _memberService.GetMemberHealthRecordDetails(id);
+            if (HealthRecord is null)
             {
                 TempData["ErrorMessage"] = "HealthRecord Not Found";
                 return RedirectToAction(nameof(Index));
@@ -82,7 +81,7 @@ namespace RouteGymManagementPL.Controllers
                 return View(nameof(Create), CreatedMember);
             }
 
-         bool result =   memberService.CreateMember(CreatedMember);
+            bool result = _memberService.CreateMember(CreatedMember);
             if (result)
             {
                 TempData["SuccessMessage"] = "Member Created Successfully";
@@ -108,7 +107,7 @@ namespace RouteGymManagementPL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var member = memberService.GetMemberToUpdate(id);
+            var member = _memberService.GetMemberToUpdate(id);
             if (member is null)
             {
                 TempData["ErrorMessage"] = "Member Not Found";
@@ -127,12 +126,12 @@ namespace RouteGymManagementPL.Controllers
                 return View(memberToUpdate);
             }
 
-            bool result = memberService.UpdateMemberDetails(id, memberToUpdate);
+            bool result = _memberService.UpdateMemberDetails(id, memberToUpdate);
             if (result)
             {
                 TempData["SuccessMessage"] = "Member Update Successfully";
             }
-            else 
+            else
             {
                 TempData["ErrorMessage"] = "Member Failed to Updated";
             }
@@ -147,35 +146,35 @@ namespace RouteGymManagementPL.Controllers
         {
             if (id <= 0)
             {
-                TempData["ErrorMessage"] = "Id of Member Can Not Be 0 Or Negative Number";
+                TempData["ErrorMessage"] = "Id Cannot Be negative or Zero";
                 return RedirectToAction(nameof(Index));
             }
 
-            var Member = memberService.GetMemberViewDetails(id);
-            if (Member == null)
+            var member = _memberService.GetMemberViewDetails(id);
+            if (member is null)
             {
                 TempData["ErrorMessage"] = "Member Not Found";
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.MemberId = id;
-            ViewBag.MemberId = Member.Name;
-
+            ViewBag.MemberName = member.Name;
             return View();
         }
 
-
         [HttpPost]
-        public ActionResult DeleteConfirmed([FromForm]int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            var result = memberService.RemoveMember(id);
+            var result = _memberService.RemoveMember(id);
+
             if (result)
             {
-                TempData["SuccessMessage"] = "Member Deleted Successfully";
+                TempData["SuccessMessage"] = "Member Deleted Succesfully";
             }
             else
             {
-                TempData["ErrorMessage"] = "Member Can Not Be Deleted";
+                TempData["ErrorMessage"] = "Member Failed to Delete";
             }
+
             return RedirectToAction(nameof(Index));
         }
 

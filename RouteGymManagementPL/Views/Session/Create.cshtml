@@ -25,7 +25,7 @@
                                 <label asp-for="CategoryId" class="form-label fw-semibold">
                                     Category <span class="text-danger">*</span>
                                 </label>
-                                <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class=" form-select">
+                                <select asp-for="CategoryId" class="form-select" asp-items="@ViewBag.Categories">
                                     <option value="">Select Category</option>
                                 </select>
                                 <span asp-validation-for="CategoryId" class="text-danger"></span>
@@ -35,9 +35,8 @@
                                 <label asp-for="TrainerId" class="form-label fw-semibold">
                                     Trainer <span class="text-danger">*</span>
                                 </label>
-                                <select asp-for="TrainerId" asp-items="@ViewBag.Trainers" class="form-select">
+                                <select asp-for="TrainerId" class="form-select" asp-items="@ViewBag.Trainers">
                                     <option value="">Select Trainer</option>
-
                                 </select>
                                 <span asp-validation-for="TrainerId" class="text-danger"></span>
                             </div>
@@ -98,6 +97,7 @@
             </div>
         </div>
     </form>
+
 </div>
 
 @section Scripts {

@@ -1,17 +1,16 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RouteGymManagementBLL;
 using RouteGymManagementBLL.Attachment_Service;
-using RouteGymManagementBLL.Services.Classes;
-using RouteGymManagementBLL.Services.Interfaces;
-using RouteGymManagementBLL.ViewModels.AnalyticsViewModels;
+using RouteGymManagementBLL.BusinessServices.Implementation;
+using RouteGymManagementBLL.BusinessServices.Interfaces;
+using RouteGymManagementBLL.Mapping;
 using RouteGymManagementDAL.Data.Contexts;
 using RouteGymManagementDAL.Data.DataSeed;
 using RouteGymManagementDAL.Entities;
 using RouteGymManagementDAL.Repositories.Classes;
+using RouteGymManagementDAL.Repositories.Implementation;
 using RouteGymManagementDAL.Repositories.Interfaces;
+using RouteGymManagementDAL.UnitOfWorkPattern.Interfaces;
 
 namespace RouteGymManagementPL
 {
@@ -21,33 +20,37 @@ namespace RouteGymManagementPL
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            #region DI Regsiteration
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<GymDbContext>(options =>
             {
-                //options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
-                //options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); // ShortHand
             });
 
             //builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             //builder.Services.AddScoped<IPlanRepository, PlanRepository>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<ISessionRepository, SessionRepository>();
-            builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
-            builder.Services.AddScoped<IMemberService, MemberService>();
-            builder.Services.AddScoped<ITrainerService, TrainerService>();
-            builder.Services.AddScoped<IPlanService, PlanService>();
-            builder.Services.AddScoped<ISessionService, SessionService>();
-            builder.Services.AddScoped<IAttachmentService, AttachmentService>();
-            builder.Services.AddScoped<IAccountService, AccountService>();
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>( Config =>
+            builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            builder.Services.AddScoped(typeof(ISessionRepository), typeof(SessionRepository));
+            builder.Services.AddScoped(typeof(IMembershipRepository), typeof(MembershipRepository));
+            builder.Services.AddScoped(typeof(IAnalyticsService), typeof(AnalyticsService));
+            builder.Services.AddScoped(typeof(IMemberService), typeof(MemberService));
+            builder.Services.AddScoped(typeof(ITrainerService), typeof(TrainerService));
+            builder.Services.AddScoped(typeof(IPlanService), typeof(PlanService));
+            builder.Services.AddScoped(typeof(ISessionService), typeof(SessionService));
+            builder.Services.AddScoped(typeof(IAttachmentService), typeof(AttachmentService));
+            builder.Services.AddScoped(typeof(IAccountService), typeof(AccountService));
+            builder.Services.AddScoped(typeof(IMembershipService), typeof(MembershipService));
+            builder.Services.AddScoped(typeof(IBookingRepository), typeof(BookingRepository));
+            builder.Services.AddScoped(typeof(IBookingService), typeof(BookingService));
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(Config =>
             {
 
                 Config.User.RequireUniqueEmail = true;
 
             }).AddEntityFrameworkStores<GymDbContext>();
-
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -55,31 +58,36 @@ namespace RouteGymManagementPL
                 options.AccessDeniedPath = "/Account/AccessDenied"; // No Need To write it - its by default
             });
 
-
             builder.Services.AddAutoMapper(x => x.AddProfile(new MappingProfiles()));
+
+            #endregion
+
 
             var app = builder.Build();
 
 
             #region Migrate Database + Data Seeding
 
-            using var scope = app.Services.CreateScope(); 
+            using var scope = app.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
 
             var pendingMigrations = dbContext.Database.GetMigrations();
-                if (pendingMigrations?.Any() ?? false)
-                {
-                    dbContext.Database.Migrate();
-                }
+            if (pendingMigrations?.Any() ?? false)
+            {
+                dbContext.Database.Migrate();
+            }
             GymDbContextSeeding.SeedData(dbContext);
             IdentityDbContextSeeding.SeedData(roleManager, userManager);
 
             #endregion
 
-            // Configure the HTTP request pipeline. 
+
+            #region Configure PipeLine [Middlewares]
+
+            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -89,22 +97,16 @@ namespace RouteGymManagementPL
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.MapStaticAssets();
-
-            //app.MapControllerRoute(
-            //    name: "Trainers", // Route Name
-            //    pattern: "Couth/{action}", // 
-            //    defaults: new { controller = "Trainer", action = "Index" }
-            //    );
-
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}/{id?}") // Variable Segment
-                // if i didn't write controller it will by default(Home) || action it will by default(Index)
+                pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
+            #endregion
+
 
             app.Run();
         }
