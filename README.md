@@ -126,6 +126,27 @@ Implemented using **ASP.NET Identity**.
 - Role-based access control  
 
 ---
+## 🔑 Login Credentials (For Testing)
+
+For testing purposes, the application seeds default admin accounts automatically when the database is created.
+
+### 👤 Super Admin Account
+- **Email:** `yousefnadi01@gmail.com`
+- **Password:** `P@ssw0rd`
+- **Role:** SuperAdmin
+
+### 👤 Admin Account
+- **Email:** `sarahali02@gmail.com`
+- **Password:** `P@ssw0rd`
+- **Role:** Admin
+
+> ⚠️ These accounts are created automatically using **ASP.NET Identity data seeding**.  
+> They are intended for **development and testing purposes only**.
+
+> 🔐 **Security Note:**  
+> Default credentials are provided for testing only and should be changed or removed in production environments.
+
+---
 
 ## 🛠️ Technologies Used
 
